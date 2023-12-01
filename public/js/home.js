@@ -172,7 +172,7 @@ undoButton.addEventListener('click', () => {
     socket.emit("draw", { arr1: arrayPoints, arr2: arrayLines });
 });
 
-var wordHolder = "";
+var wordHolder = null;
 
 socket.on("word", (word, difficulty) => {
     currentDifficulty = difficulty;
@@ -828,7 +828,7 @@ function polling() {
         if (pointValue > .5) {
             pointValue -= .01;
         }
-
+        if(wordHolder != null)
         timer--;
         $("#timer").html("Time Left: " + timer);
         console.log(timer);
@@ -866,6 +866,15 @@ function timeOver() {
     }
     else if (playersDrawn < holdPlayers.length) {
         console.log("next player");
+        holdWord == null;
+        wordHolder == null;
+        if (drawerYou) {
+            wordHolder = null;
+            $("#displayWord").html(wordHolder);
+        } else {
+            holdWord = null;
+            $("#displayWord").html(holdWord);
+        }
         playersDrawn++
 
         context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);/////////
@@ -881,10 +890,19 @@ function timeOver() {
         timer = maxTimer;
     }
     else if (playersDrawn >= holdPlayers.length) {
+        holdWord == null;
+        wordHolder == null;
+        if (drawerYou) {
+            wordHolder = null;
+            $("#displayWord").html(wordHolder);
+        } else {
+            holdWord = null;
+            $("#displayWord").html(holdWord);
+        }
+
         console.log("new round");
         guessRight = false
         playersDrawn = 1;
-
         context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);/////////
         arrayLines = [];
         //socket.emit("draw", { arr1: arrayPoints, arr2: arrayLines });
@@ -902,8 +920,7 @@ function timeOver() {
 
 socket.on("Game Over", (winner, score) => {
     console.log("Game Over")
-    alert("Winner is " + winner + " with " + score + " points")
-
+    window.location.href = "/";
 });
 
 socket.on("start Game", () => {
